@@ -42,5 +42,9 @@ app-example
 /ios
 /android
 AGENTS.md
+<<<<<<< derash-branch
 CLAUDE.md
 nativewind-env.d.ts
+=======
+CLAUDE.md
+>>>>>>> main
