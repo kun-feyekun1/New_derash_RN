@@ -41,3 +41,6 @@ app-example
 # generated native folders
 /ios
 /android
+AGENTS.md
+CLAUDE.md
+nativewind-env.d.ts
