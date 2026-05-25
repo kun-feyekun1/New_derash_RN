@@ -15,8 +15,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/auth/login') || url.includes('/auth/signup')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.skipMockResponse = false;
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: {
               user: MOCK_USER,
@@ -32,7 +31,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/auth/verify-otp')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: {
               user: MOCK_USER,
@@ -48,7 +47,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/auth/forgot-password')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: { message: 'OTP sent to your phone' }
           };
@@ -61,7 +60,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/transport/nearby')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: MOCK_NEARBY_TRANSPORT
           };
@@ -74,7 +73,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/routes/recommendations')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: MOCK_ROUTE_RECOMMENDATIONS
           };
@@ -87,7 +86,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/routes/search-destinations')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: [
               { name: 'Piazza', latitude: 9.0400, longitude: 38.7500 },
@@ -105,7 +104,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/profile/notifications')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: MOCK_NOTIFICATIONS
           };
@@ -118,7 +117,7 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
     if (url.includes('/wallet')) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          config.mockResponse = {
+          (config as any).mockResponse = {
             status: 200,
             data: MOCK_WALLET
           };
@@ -132,8 +131,8 @@ export const setupMockInterceptor = (client: AxiosInstance) => {
 
   // Response interceptor for mock responses
   client.interceptors.response.use((response) => {
-    if (response.config.mockResponse) {
-      return response.config.mockResponse;
+    if ((response.config as any).mockResponse) {
+      return (response.config as any).mockResponse;
     }
     return response;
   });
