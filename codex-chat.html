@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Derash AI - Codex Sale</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0f172a; }
+    .chat-container { max-width: 800px; margin: 0 auto; }
+  </style>
+</head>
+<body class="min-h-screen text-white p-4">
+  <div class="chat-container mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-emerald-400">Derash AI</h1>
+      <p class="text-gray-400">Powered by Codex Sale</p>
+    </div>
+
+    <div id="chat" class="bg-zinc-900 rounded-2xl h-[70vh] overflow-y-auto p-6 mb-4 space-y-4"></div>
+
+    <div class="flex gap-3">
+      <input 
+        id="input" 
+        type="text" 
+        placeholder="Type your message..." 
+        class="flex-1 bg-zinc-800 text-white rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        onkeypress="if(event.key === 'Enter') sendMessage()"
+      >
+      <button 
+        onclick="sendMessage()"
+        class="bg-emerald-500 hover:bg-emerald-600 px-8 rounded-2xl font-medium transition-colors"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = "sk-inv-yTYmqdqEydl0I8Df3wp0uI8uXuObRrCK";
+    const BASE_URL = "https://codex.sale/v1";
+
+    const chatDiv = document.getElementById('chat');
+    const input = document.getElementById('input');
+
+    function addMessage(text, isUser) {
+      const msg = document.createElement('div');
+      msg.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+      msg.innerHTML = `
+        <div class="${isUser ? 'bg-emerald-600' : 'bg-zinc-700'} max-w-[80%] rounded-2xl px-5 py-3">
+          ${text}
+        </div>
+      `;
+      chatDiv.appendChild(msg);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, true);
+      input.value = '';
+
+      // Show typing indicator
+      const typing = document.createElement('div');
+      typing.id = 'typing';
+      typing.textContent = "Thinking...";
+      typing.className = "text-gray-400 italic";
+      chatDiv.appendChild(typing);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try {
+        const response = await fetch(`${BASE_URL}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: "You are a helpful assistant." },
+              { role: "user", content: message }
+            ],
+            temperature: 0.7
+          })
+        });
+
+        const data = await response.json();
+        document.getElementById('typing').remove();
+        
+        const reply = data.choices?.[0]?.message?.content || "Sorry, I couldn't process that.";
+        addMessage(reply, false);
+
+      } catch (error) {
+        document.getElementById('typing').remove();
+        addMessage("Error: Could not connect to AI. Check your internet.", false);
+        console.error(error);
+      }
+    }
+
+    // Welcome message
+    window.onload = () => {
+      addMessage("Hello! I'm ready. Ask me anything.", false);
+    };
+  </script>
+</body>
+</html>
